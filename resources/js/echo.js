@@ -5,7 +5,9 @@ window.Pusher = Pusher;
 
 let options = {};
 
-if (import.meta.env.APP_ENV === "local") {
+console.log(import.meta.env.VITE_PUSHER_ENV)
+
+if (import.meta.env.VITE_PUSHER_ENV === "local") {
     options = {
         broadcaster: "reverb",
         cluster: import.meta.env.VITE_PUSHER_CLUSTER,

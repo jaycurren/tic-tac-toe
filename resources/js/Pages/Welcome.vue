@@ -27,6 +27,8 @@
     let onlineUsers = ref<Array<string>>([]);
 
     onMounted(() => {
+        // @ts-ignore
+        console.log(Echo);
         isLoading.value = true;
 
         formData.value.name = props.user.name;
