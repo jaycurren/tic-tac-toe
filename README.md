@@ -31,7 +31,7 @@ docker exec -it tic-tac-toe-curren bash
 ```
 
 ```bash
-docker exec -it tic-tac-toe-curren npm run dev
+npm i
 ```
 
 Generate key
@@ -44,6 +44,14 @@ Run migrations and seed
 
 ```bash
 php artisan migrate --seed
+```
+
+```bash
+exit
+```
+
+```bash
+docker exec -it tic-tac-toe-curren npm run dev
 ```
 
 # Running image normally
