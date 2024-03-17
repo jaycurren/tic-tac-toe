@@ -14,12 +14,18 @@ class BroadcastGamerPlay implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    private $game;
+    private $slug;
+    private $turn;
+
     /**
      * Create a new event instance.
      */
-    public function __construct()
+    public function __construct(array $game, int $turn, string $slug)
     {
-        //
+        $this->game = $game;
+        $this->slug = $slug;
+        $this->turn = $turn;
     }
 
     /**
@@ -30,7 +36,20 @@ class BroadcastGamerPlay implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('channel-name'),
+            new PrivateChannel("games.play.{$this->slug}"),
+        ];
+    }
+
+    /**
+     * Get the data to broadcast.
+     *
+     * @return array<string, mixed>
+     */
+    public function broadcastWith(): array
+    {
+        return [
+            "game" => $this->game,
+            "turn" => $this->turn
         ];
     }
 }

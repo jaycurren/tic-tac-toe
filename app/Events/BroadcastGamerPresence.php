@@ -31,16 +31,4 @@ class BroadcastGamerPresence implements ShouldBroadcast
             new PresenceChannel("games.room"),
         ];
     }
-
-    // /**
-    //  * Get the data to broadcast.
-    //  *
-    //  * @return array<string, mixed>
-    //  */
-    // public function broadcastWith(): array
-    // {
-    //     return [
-    //         "online_users" => $this->online_users
-    //     ];
-    // }
 }

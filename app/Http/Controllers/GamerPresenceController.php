@@ -12,7 +12,7 @@ use App\Events\BroadcastGamerPresence;
 class GamerPresenceController extends Controller
 {
     /**
-     * @return RedirectResponse
+     * @return Response
      */
     public function store(): Response
     {

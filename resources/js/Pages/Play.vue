@@ -16,6 +16,11 @@
         slug: string
     }
 
+    interface GamePlayData {
+        game: Array<Number>;
+        turn: Number;
+    }
+
     interface UserData {
         name: string;
     }
@@ -26,6 +31,10 @@
     }>();
 
     let formData = ref<FromData>({ invite_name: "", user_name: "", slug: "" });
+    let gamePlay = ref<GamePlayData>({
+        game: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        turn: 1
+    });
     let inviteSent = ref<String>("");
     let onlineUsers = ref<Array<string>>([]);
 
@@ -33,12 +42,9 @@
         formData.value.user_name = props.user.name;
         formData.value.slug = props.game.slug;
 
-        console.log("sdqdq");
-
         // @ts-ignore
         Echo.join("games.room")
         .here(data => {
-            console.log(data);
             onlineUsers.value = data.map(d => d.name);
         })
         .joining(data => {
@@ -54,6 +60,13 @@
         Echo.private(`games.accept.${props.user.name}`)
         .listen("BroadcastGamerAccept", data => {
             inviteSent.value = "accepted";
+
+            // @ts-ignore
+            Echo.private(`games.play.${props.game.slug}`)
+            .listen("BroadcastGamerPlay", data => {
+                gamePlay.value.game = data.game;
+                gamePlay.value.turn = data.turn;
+            });
         });
     });
 
@@ -61,6 +74,14 @@
         inviteSent.value = "sent";
         formData.value.invite_name = userName;
         router.post("/game/invite", formData.value);
+    }
+
+    const pickSquare = square => {
+        gamePlay.value.game[square] = 1;
+        gamePlay.value.turn = 2;
+
+        // @ts-ignore
+        router.post(`/game/${props.game.slug}/turn`, gamePlay.value);
     }
 </script>
 
@@ -70,7 +91,11 @@
             <section class="border border-white flex flex-col gap-4 mb-8 p-4 rounded w-full">
                 <TicTacGrid
                     v-if="inviteSent === 'accepted'"
+                    @pick-square="pickSquare"
                     :game="game"
+                    :gameData="gamePlay.game"
+                    :player="1"
+                    :turn="gamePlay.turn"
                     :user="user"
                 />
 

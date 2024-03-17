@@ -6,18 +6,17 @@
     // @ts-ignore
     import TicTacGrid from "@/Components/TicTacGrid.vue";
 
-    interface FromData {
-        invite_name: string;
-        user_name: string;
-        slug: string;
+    interface GameData {
+        slug: String
     }
 
-    interface GameData {
-        slug: string
+    interface GamePlayData {
+        game: Array<Number>;
+        turn: Number;
     }
 
     interface UserData {
-        name: string;
+        name: String;
     }
 
     const props = defineProps<{
@@ -25,23 +24,28 @@
         user: UserData
     }>();
 
-    let onlineUsers = ref<Array<string>>([]);
+    let gamePlay = ref<GamePlayData>({
+        game: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        turn: 1
+    });
+    let onlineUsers = ref<Array<String>>([]);
 
     onMounted(() => {
         // @ts-ignore
-        Echo.join("games.room")
-        .here(data => {
-            onlineUsers.value = data.map(d => d.name);
-        })
-        .joining(data => {
-            onlineUsers.value.push(data.name);
-        })
-        .leaving(data => {
-            const position = onlineUsers.value.indexOf(data.name);
-
-            if (position > -1) onlineUsers.value.splice(position, 1);
+        Echo.private(`games.play.${props.game.slug}`)
+        .listen("BroadcastGamerPlay", data => {
+            gamePlay.value.game = data.game;
+            gamePlay.value.turn = data.turn;
         });
     });
+
+    const pickSquare = square => {
+        gamePlay.value.game[square] = 2;
+        gamePlay.value.turn = 1;
+
+        // @ts-ignore
+        router.post(`/game/${props.game.slug}/turn`, gamePlay.value);
+    }
 </script>
 
 <template>
@@ -49,7 +53,11 @@
         <div class="container py-8 lg:flex lg:items-baseline lg:gap-4">
             <section class="border border-white flex flex-col gap-4 mb-8 p-4 rounded w-full">
                 <TicTacGrid
+                    @pick-square="pickSquare"
                     :game="game"
+                    :gameData="gamePlay.game"
+                    :player="2"
+                    :turn="gamePlay.turn"
                     :user="user"
                 />
             </section>
