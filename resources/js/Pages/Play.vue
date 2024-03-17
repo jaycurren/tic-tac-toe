@@ -64,7 +64,7 @@
         });
 
         // @ts-ignore
-        Echo.private(`games.accept.${playProps.user.name}`)
+        Echo.channel(`games.accept.${playProps.user.name}`)
         .listen("BroadcastGamerAccept", data => {
             inviteSent.value = "accepted";
 

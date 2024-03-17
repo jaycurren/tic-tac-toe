@@ -32,7 +32,7 @@ class BroadcastGamerAccept implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel("games.accept.{$this->invited_user}"),
+            new Channel("games.accept.{$this->invited_user}"),
         ];
     }
 }
