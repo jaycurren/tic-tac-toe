@@ -7,23 +7,24 @@
     import TicTacGrid from "@/Components/TicTacGrid.vue";
 
     interface FromData {
-        invite_name: string;
-        user_name: string;
-        slug: string;
+        invite_name: String;
+        user_name: String;
+        slug: String;
     }
 
     interface GameData {
-        slug: string
+        slug: String;
+        winner: String;
     }
 
     interface GamePlayData {
         game: Array<Number>;
         turn: Number;
-        winner: String
+        winner: String;
     }
 
     interface UserData {
-        name: string;
+        name: String;
     }
 
     const { props } = usePage();
@@ -43,6 +44,8 @@
     let onlineUsers = ref<Array<string>>([]);
 
     onMounted(() => {
+        if (playProps.game.winner) gamePlay.value.winner = playProps.game.winner;
+
         // Hack to get online users refreshed when we land on this page
         const current = window.location.href;
         const url = new URL(current);
@@ -88,9 +91,10 @@
         router.post("/game/invite", formData.value);
     }
 
-    const pickSquare = square => {
-        gamePlay.value.game[square] = 1;
+    const pickSquare = data => {
+        gamePlay.value.game[data.square] = 1;
         gamePlay.value.turn = 2;
+        gamePlay.value.winner = data.winner !== "none" ? "player_one" : "none";
 
         // @ts-ignore
         router.post(`/game/${playProps.game.slug}/turn`, gamePlay.value);
@@ -109,6 +113,7 @@
                     :player="1"
                     :turn="gamePlay.turn"
                     :user="user"
+                    :winner="gamePlay.winner"
                 />
 
                 <p

@@ -78,7 +78,7 @@
 
                 <input
                     @click.prevent="postForm()"
-                    class="bg-white cursor-pointer rounded py-4"
+                    class="bg-white cursor-pointer mx-auto rounded py-4 w-64"
                     type="submit"
                     value="Create game"
                 >
@@ -136,7 +136,7 @@
                 <button
                     v-if="gameInvites.game_slug"
                     @click.prevent="acceptInvite(gameInvites.game_slug)"
-                    class="bg-white rounded text-center py-4 px-8"
+                    class="bg-white mx-auto rounded text-center py-4 px-8 w-64"
                 >
                     Play Game
                 </button>

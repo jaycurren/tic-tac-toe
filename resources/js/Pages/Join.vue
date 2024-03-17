@@ -7,7 +7,8 @@
     import TicTacGrid from "@/Components/TicTacGrid.vue";
 
     interface GameData {
-        slug: String
+        slug: String;
+        winner: String;
     }
 
     interface GamePlayData {
@@ -33,6 +34,8 @@
     let onlineUsers = ref<Array<String>>([]);
 
     onMounted(() => {
+        if (props.game.winner) gamePlay.value.winner = props.game.winner;
+
         // @ts-ignore
         Echo.private(`games.play.${props.game.slug}`)
         .listen("BroadcastGamerPlay", data => {
@@ -42,9 +45,10 @@
         });
     });
 
-    const pickSquare = square => {
-        gamePlay.value.game[square] = 2;
+    const pickSquare = data => {
+        gamePlay.value.game[data.square] = 2;
         gamePlay.value.turn = 1;
+        gamePlay.value.winner = data.winner !== "none" ? "player_two" : "none";
 
         // @ts-ignore
         router.post(`/game/${props.game.slug}/turn`, gamePlay.value);
@@ -62,6 +66,7 @@
                     :player="2"
                     :turn="gamePlay.turn"
                     :user="user"
+                    :winner="gamePlay.winner"
                 />
             </section>
         </div>
