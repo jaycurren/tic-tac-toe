@@ -3,6 +3,8 @@
     import { router } from "@inertiajs/vue3";
 
     import IconLoader from "@/Components/IconLoader.vue";
+    // @ts-ignore
+    import TicTacGrid from "@/Components/TicTacGrid.vue";
 
     interface FromData {
         invite_name: string;
@@ -24,16 +26,19 @@
     }>();
 
     let formData = ref<FromData>({ invite_name: "", user_name: "", slug: "" });
-    let inviteSent = ref<Boolean>(false);
+    let inviteSent = ref<String>("");
     let onlineUsers = ref<Array<string>>([]);
 
     onMounted(() => {
         formData.value.user_name = props.user.name;
         formData.value.slug = props.game.slug;
 
+        console.log("sdqdq");
+
         // @ts-ignore
         Echo.join("games.room")
         .here(data => {
+            console.log(data);
             onlineUsers.value = data.map(d => d.name);
         })
         .joining(data => {
@@ -44,10 +49,16 @@
 
             if (position > -1) onlineUsers.value.splice(position, 1);
         });
+
+        // @ts-ignore
+        Echo.private(`games.accept.${props.user.name}`)
+        .listen("BroadcastGamerAccept", data => {
+            inviteSent.value = "accepted";
+        });
     });
 
     const inviteUser = userName => {
-        inviteSent.value = true;
+        inviteSent.value = "sent";
         formData.value.invite_name = userName;
         router.post("/game/invite", formData.value);
     }
@@ -57,11 +68,17 @@
     <main class="bg-black min-h-screen">
         <div class="container py-8 lg:flex lg:items-baseline lg:gap-4">
             <section class="border border-white flex flex-col gap-4 mb-8 p-4 rounded w-full">
+                <TicTacGrid
+                    v-if="inviteSent === 'accepted'"
+                    :game="game"
+                    :user="user"
+                />
+
                 <p
-                    v-if="!game.player_two && inviteSent"
+                    v-else-if="!game.player_two && inviteSent === 'sent'"
                     class="font-bold text-center text-xl text-white"
                 >
-                    Waiting for player to accept
+                    Invite pending...
                 </p>
 
                 <p
@@ -72,21 +89,14 @@
                 </p>
 
                 <p
-                    v-if="inviteSent"
-                    class="text-white"
-                >
-                    Invite pending...
-                </p>
-
-                <p
-                    v-else-if="!onlineUsers.length"
+                    v-if="!onlineUsers.length"
                     class="text-white"
                 >
                     No users are currently online
                 </p>
 
                 <div
-                    v-else
+                    v-else-if="!inviteSent"
                     v-for="(gamer, index) in onlineUsers"
                     :key="`user-${index}`"
                     class="border-b border-white flex items-center justify-between mb-4 pb-4"

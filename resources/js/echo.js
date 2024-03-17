@@ -5,8 +5,6 @@ window.Pusher = Pusher;
 
 let options = {};
 
-console.log(import.meta.env.VITE_PUSHER_ENV)
-
 if (import.meta.env.VITE_PUSHER_ENV === "local") {
     options = {
         broadcaster: "reverb",

@@ -12,6 +12,7 @@ class GamePlayController extends Controller
 {
     /**
      * @param string $slug
+     * @return Response
      */
     public function show(string $slug): Response
     {

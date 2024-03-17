@@ -27,8 +27,6 @@
     let onlineUsers = ref<Array<string>>([]);
 
     onMounted(() => {
-        // @ts-ignore
-        console.log(Echo);
         isLoading.value = true;
 
         formData.value.name = props.user.name;
@@ -55,6 +53,10 @@
             gameInvites.value = data;
         });
     });
+
+    const acceptInvite = slug => {
+        router.post(`/game/${slug}/player-two`, { name: props.user.name });
+    }
 
     const postForm = () => {
         router.post("/game/create", formData.value);
@@ -131,14 +133,13 @@
                     You have a game invite request from {{ gameInvites.invite_from }}
                 </p>
 
-                <a
+                <button
                     v-if="gameInvites.game_slug"
-                    :href="`/${gameInvites.game_slug}/player-two`"
+                    @click.prevent="acceptInvite(gameInvites.game_slug)"
                     class="bg-white rounded text-center py-4 px-8"
-                    title="Play game"
                 >
                     Play Game
-                </a>
+                </button>
 
                 <p
                     v-else

@@ -11,6 +11,7 @@ class GameCreateController extends Controller
 {
     /**
      * @param GameCreateRequest $request
+     * @return RedirectResponse
      */
     public function store(GameCreateRequest $request): RedirectResponse
     {

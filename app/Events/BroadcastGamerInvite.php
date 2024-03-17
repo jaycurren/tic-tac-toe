@@ -37,7 +37,6 @@ class BroadcastGamerInvite implements ShouldBroadcast
      */
     public function broadcastOn(): array
     {
-        \Log::info("games.invite.{$this->invite_user}");
         return [
             new PrivateChannel("games.invite.{$this->invite_user}"),
         ];

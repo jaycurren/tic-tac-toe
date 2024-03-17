@@ -9,12 +9,11 @@ use App\Http\Requests\GameInviteRequest;
 class GameInviteController extends Controller
 {
     /**
+     * @param GameInviteRequest $request
      * @return Response
      */
     public function store(GameInviteRequest $request): RedirectResponse
     {
-        \Log::info($request);
-
         BroadcastGamerInvite::dispatch(
             $request->invite_name,
             $request->user_name,
