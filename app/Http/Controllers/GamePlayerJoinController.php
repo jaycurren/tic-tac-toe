@@ -30,8 +30,6 @@ class GamePlayerJoinController extends Controller
             "player_two" => $request->name
         ]);
 
-        \Log::info($game);
-
         BroadcastGamerAccept::dispatch($game->player_one);
         BroadcastGamerPresence::dispatch();
 

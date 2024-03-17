@@ -18,7 +18,7 @@ class GamePlayerJoinTest extends TestCase
 
         $response = $this->get("/game/" . $slug . "/player-two");
 
-        $response->assertStatus(200);
+        $response->assertStatus(302);
     }
 
     /**

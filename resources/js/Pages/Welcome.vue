@@ -55,7 +55,7 @@
     });
 
     const acceptInvite = slug => {
-        router.post(`/game/${slug}/player-two`, { name: props.user.name });
+        router.get(`/game/${slug}/player-two`, { name: props.user.name });
     }
 
     const postForm = () => {

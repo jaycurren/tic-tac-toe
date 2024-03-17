@@ -14,7 +14,7 @@ Route::get("/", [GamerPresenceController::class, "store"]);
 
 Route::group(["prefix" => "/game"], function () {
     Route::get("/{slug}", [GamePlayController::class, "show"]);
-    Route::post("/{slug}/player-two", [GamePlayerJoinController::class, "show"]);
+    Route::get("/{slug}/player-two", [GamePlayerJoinController::class, "show"]);
     Route::post("/create", [GameCreateController::class, "store"]);
     Route::post("/invite", [GameInviteController::class, "store"]);
 });
