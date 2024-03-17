@@ -13,6 +13,7 @@
     interface GamePlayData {
         game: Array<Number>;
         turn: Number;
+        winner: String
     }
 
     interface UserData {
@@ -26,7 +27,8 @@
 
     let gamePlay = ref<GamePlayData>({
         game: [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        turn: 1
+        turn: 1,
+        winner: "none"
     });
     let onlineUsers = ref<Array<String>>([]);
 
@@ -36,6 +38,7 @@
         .listen("BroadcastGamerPlay", data => {
             gamePlay.value.game = data.game;
             gamePlay.value.turn = data.turn;
+            gamePlay.value.winner = data.winner;
         });
     });
 

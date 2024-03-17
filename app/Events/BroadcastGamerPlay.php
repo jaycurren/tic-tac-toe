@@ -17,15 +17,17 @@ class BroadcastGamerPlay implements ShouldBroadcast
     private $game;
     private $slug;
     private $turn;
+    private $winner;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(array $game, int $turn, string $slug)
+    public function __construct(array $game, int $turn, string $slug, string $winner)
     {
         $this->game = $game;
         $this->slug = $slug;
         $this->turn = $turn;
+        $this->winner = $winner;
     }
 
     /**
@@ -49,7 +51,8 @@ class BroadcastGamerPlay implements ShouldBroadcast
     {
         return [
             "game" => $this->game,
-            "turn" => $this->turn
+            "turn" => $this->turn,
+            "winner" => $this->winner
         ];
     }
 }

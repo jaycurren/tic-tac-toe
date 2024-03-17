@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import { onMounted, ref } from "vue";
-    import { router } from "@inertiajs/vue3";
+    import { router, usePage } from "@inertiajs/vue3";
 
     import IconLoader from "@/Components/IconLoader.vue";
     // @ts-ignore
@@ -19,13 +19,16 @@
     interface GamePlayData {
         game: Array<Number>;
         turn: Number;
+        winner: String
     }
 
     interface UserData {
         name: string;
     }
 
-    const props = defineProps<{
+    const { props } = usePage();
+
+    const playProps = defineProps<{
         game: GameData,
         user: UserData
     }>();
@@ -33,14 +36,22 @@
     let formData = ref<FromData>({ invite_name: "", user_name: "", slug: "" });
     let gamePlay = ref<GamePlayData>({
         game: [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        turn: 1
+        turn: 1,
+        winner: "none"
     });
     let inviteSent = ref<String>("");
     let onlineUsers = ref<Array<string>>([]);
 
     onMounted(() => {
-        formData.value.user_name = props.user.name;
-        formData.value.slug = props.game.slug;
+        // Hack to get online users refreshed when we land on this page
+        const current = window.location.href;
+        const url = new URL(current);
+        const param = url.searchParams.get("refreshed");
+
+        if (!param) window.location.href = `/game/${playProps.game.slug}?refreshed=1`;
+
+        formData.value.user_name = playProps.user.name;
+        formData.value.slug = playProps.game.slug;
 
         // @ts-ignore
         Echo.join("games.room")
@@ -57,15 +68,16 @@
         });
 
         // @ts-ignore
-        Echo.private(`games.accept.${props.user.name}`)
+        Echo.private(`games.accept.${playProps.user.name}`)
         .listen("BroadcastGamerAccept", data => {
             inviteSent.value = "accepted";
 
             // @ts-ignore
-            Echo.private(`games.play.${props.game.slug}`)
+            Echo.private(`games.play.${playProps.game.slug}`)
             .listen("BroadcastGamerPlay", data => {
                 gamePlay.value.game = data.game;
                 gamePlay.value.turn = data.turn;
+                gamePlay.value.winner = data.winner;
             });
         });
     });
@@ -81,7 +93,7 @@
         gamePlay.value.turn = 2;
 
         // @ts-ignore
-        router.post(`/game/${props.game.slug}/turn`, gamePlay.value);
+        router.post(`/game/${playProps.game.slug}/turn`, gamePlay.value);
     }
 </script>
 

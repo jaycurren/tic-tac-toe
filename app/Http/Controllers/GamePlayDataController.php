@@ -9,6 +9,7 @@ use App\Http\Requests\GamePlayDataRequest;
 class GamePlayDataController extends Controller
 {
     /**
+     * Check for winner in the current game and set it up if they are
      * @param GamePlayDataRequest $request
      * @param String $slug
      * @return RedirectResponse
@@ -18,7 +19,8 @@ class GamePlayDataController extends Controller
         BroadcastGamerPlay::dispatch(
             $request->game,
             $request->turn,
-            $slug
+            $slug,
+            $request->winner
         );
 
         return back();

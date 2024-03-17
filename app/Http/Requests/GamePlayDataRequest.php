@@ -23,7 +23,8 @@ class GamePlayDataRequest extends FormRequest
     {
         return [
             "game" => ["required", "array"],
-            "turn" => ["required", "numeric"]
+            "turn" => ["required", "numeric"],
+            "winner" => ["required", "string"]
         ];
     }
 }

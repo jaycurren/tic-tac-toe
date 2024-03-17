@@ -34,7 +34,7 @@
             </p>
 
             <p class="absolute right-0 text-white">
-                Player {{ turn }} turn
+                {{ turn === player ? "Your": "Opponents" }} turn
             </p>
         </header>
 
