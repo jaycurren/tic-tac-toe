@@ -46,13 +46,6 @@
     onMounted(() => {
         if (playProps.game.winner) gamePlay.value.winner = playProps.game.winner;
 
-        // Hack to get online users refreshed when we land on this page
-        const current = window.location.href;
-        const url = new URL(current);
-        const param = url.searchParams.get("refreshed");
-
-        if (!param) window.location.href = `/game/${playProps.game.slug}?refreshed=1`;
-
         formData.value.user_name = playProps.user.name;
         formData.value.slug = playProps.game.slug;
 
@@ -88,6 +81,7 @@
     const inviteUser = userName => {
         inviteSent.value = "sent";
         formData.value.invite_name = userName;
+        // @ts-ignore
         router.post("/game/invite", formData.value);
     }
 

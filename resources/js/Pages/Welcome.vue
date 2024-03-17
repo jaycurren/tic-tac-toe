@@ -59,6 +59,9 @@
     }
 
     const postForm = () => {
+        // @ts-ignore
+        Echo.leave("games.room");
+
         router.post("/game/create", formData.value);
     }
 </script>
